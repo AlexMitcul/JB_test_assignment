@@ -42,17 +42,16 @@ This Java application creates an inverted index of text files or directories and
 
 ```text
 Enter the absolute path of directory or file (enter empty line to proceed): 
-/home/user/docs/file1.txt
+/root/jb_test_assessment/app/src/main/resources
 Enter the absolute path of directory or file (enter empty line to proceed): 
-/home/user/docs/file2.txt
-
+/root/jb_test_assessment/app/src/main/resources/dirNotToInclude/from_not_to_include_dir.txt
 Indexing completed.
 
 Enter word to query (enter empty line to proceed): 
-example
+Hello
 
 There are matches in the following files:
-/home/user/docs/file1.txt
+/root/jb_test_assessment/app/src/main/resources/dirNotToInclude/from_not_to_include_dir.txt
 ```
 
 ## Error Handling
