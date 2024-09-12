@@ -61,3 +61,16 @@ There are matches in the following files:
 You can extend the functionality by modifying the `Analyzer`:
 - Add new filters or tokenizers.
 - Modify the existing lowercasing behavior or tokenizer logic.
+
+Here's an updated section for your README to include the file change detection features:
+
+---
+
+## File Change Detection
+
+The application also supports detecting changes in files and directories. It will automatically handle:
+
+- **File Changes**: Reindexes modified files to ensure the index remains up-to-date.
+- **File Deletions**: Removes references to deleted files from the index.
+- **File Creations**: Adds newly created files to the index.
+
