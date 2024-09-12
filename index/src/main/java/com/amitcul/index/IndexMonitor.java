@@ -45,10 +45,12 @@ public class IndexMonitor implements Runnable {
     public void run() {
         while (!Thread.currentThread().isInterrupted()) {
             try {
-                Event event = eventQueue.take();
-                handleEvent(event);
+                if (!eventQueue.isEmpty()) {
+                    Event event = eventQueue.take();
+                    handleEvent(event);
+                }
             } catch (InterruptedException e) {
-                LOG.log(Level.SEVERE, "InterruptedException occurred", e);
+                LOG.log(Level.INFO, "IndexMonitor Stopped", e);
                 Thread.currentThread().interrupt();
             }
         }
@@ -61,6 +63,7 @@ public class IndexMonitor implements Runnable {
         Path fileName = ev.context().getFileName();
         Path filePath = parentDir.resolve(fileName);
 
+        if (isTemproraryFile(fileName)) return;
         switch (kind.name()) {
             case "ENTRY_CREATE":
                 LOG.log(Level.INFO, "File created: {0}", filePath);
@@ -77,6 +80,11 @@ public class IndexMonitor implements Runnable {
             default:
                 LOG.log(Level.INFO, "Unmatched action with file: {0}", filePath);
         }
+    }
+
+    private boolean isTemproraryFile(Path fileName) {
+        String fileNameStr = fileName.toString();
+        return fileNameStr.endsWith("~") || fileNameStr.endsWith(".tmp") || fileNameStr.startsWith(".");
     }
 
 }

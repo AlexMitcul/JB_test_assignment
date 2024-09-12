@@ -17,41 +17,43 @@ public class FileManager {
     //endregion
 
     //region Register Files & Dirs API
-    public void addFile(String filePath) throws NoSuchFileException {
-        Path path = Paths.get(filePath);
-        checkFile(path);
-        files.add(path);
-    }
-
     public void addFile(Path filePath) {
         files.add(filePath);
     }
 
-    public void addDirectory(String dirPath) throws DirectoryProcessingException {
-        walkByDir(Paths.get(dirPath));
+    public void addInstance(String pathStr) throws NoSuchFileException {
+        Path path = Path.of(pathStr);
+        if (!Files.exists(path)) {
+            throw new NoSuchFileException(pathStr);
+        }
+
+        if (Files.isRegularFile(path)) {
+            addFile(path);
+        } else if (Files.isDirectory(path)) {
+            try {
+                addDirectory(path);
+            } catch (DirectoryProcessingException e) {
+                throw new NoSuchFileException(e.getLocalizedMessage());
+            }
+        }
     }
 
-    public void addDirectory(Path dirPath) throws DirectoryProcessingException {
+    private void addDirectory(Path dirPath) throws DirectoryProcessingException {
         walkByDir(dirPath);
     }
-    //endregion
 
+    //endregion
     //region Getters
+
     public List<Path> getFiles() {
         return files;
     }
-
     public int getFilesCount() {
         return files.size();
     }
-    //endregion
 
+    //endregion
     //region Private Region
-    private void checkFile(Path path) throws NoSuchFileException {
-        if (path == null || !Files.exists(path)) {
-            throw new NoSuchFileException(path != null ? path.toString() : "null", null, "Invalid path: " + path);
-        }
-    }
 
     private void walkByDir(Path dirPath) throws DirectoryProcessingException {
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(dirPath, Files::isRegularFile)) {
@@ -60,7 +62,6 @@ public class FileManager {
             throw new DirectoryProcessingException("Error processing directory: " + dirPath, e);
         }
     }
-
     //region FileWatcher
     public void setUpWatcher(BlockingQueue<Event> eventsQueue) throws IOException {
         fileWatcher = new FileWatcher(this.getFiles(), eventsQueue);
@@ -72,5 +73,6 @@ public class FileManager {
             fileWatcher.stopWatching();
         }
     }
+
     //endregion
 }
