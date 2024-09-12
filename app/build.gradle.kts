@@ -3,15 +3,14 @@
  */
 
 plugins {
-    id("buildlogic.java-application-conventions")
+    id("application")
 }
 
 dependencies {
-    implementation("org.apache.commons:commons-text")
     implementation(project(":index"))
 }
 
 application {
     // Define the main class for the application.
-    mainClass = "org.example.app.App"
+    mainClass = "com.amitcul.app.App"
 }
